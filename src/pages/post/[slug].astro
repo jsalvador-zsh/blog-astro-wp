@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPostInfo, getAllPostSlugs } from "../../lib/wp";
+
+const slug = (Astro.params as { slug: string }).slug;
+if (!slug) return Astro.redirect("/404");
+const { title, content, date, excerpt } = await getPostInfo(slug);
+export async function getStaticPaths() {
+    const slugs = await getAllPostSlugs();
+    console.log(slugs);
+    return slugs.map((slug: string) => ({ params: { slug } }));
+}
+---
+
+<Layout title={title}>
+    <article>
+        <header class="mx-auto max-w-screen-md pt-28 text-center px-4">
+            <p class="text-gray-500">{date}</p>
+            <h1 class="mt-2 text-3xl font-bold text-gray-900 sm:text-5xl">
+                {title}
+            </h1>
+            <div class="mt-6 text-lg text-gray-700" set:html={excerpt} />
+        </header>
+        <div
+            class="mx-auto mt-10 max-w-screen-md space-y-4 px-4 py-10 font-serif text-lg tracking-wide text-gray-700 prose"
+            set:html={content}
+        />
+        <div class="w-fit mx-auto py-10 flex space-x-2">
+        <div class="h-0.5 w-2 bg-gray-600"></div>
+        <div class="h-0.5 w-32 bg-gray-600"></div>
+        <div class="h-0.5 w-2 bg-gray-600"></div>
+    </div>
+    </article>
+    
+</Layout>

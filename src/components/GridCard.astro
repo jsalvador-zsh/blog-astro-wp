@@ -1,0 +1,21 @@
+---
+import { getPageInfo, getLatestPosts } from "../lib/wp";
+import Card from "./Card.astro";
+
+const { title, content } = await getPageInfo("bienvenidos-a-gamehub");
+const posts = await getLatestPosts({ perPage: 4 });
+---
+
+<div class="bg-gray-100 px-4 py-12">
+	<div class="max-w-5xl max-lg:max-w-3xl max-sm:max-w-sm mx-auto">
+		<h2 class="text-3xl font-bold text-slate-900 mb-8 text-center">
+			{title}
+		</h2>
+		<div class="text-lg text-center mb-8" set:html={content} />
+		<div
+			class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-sm:gap-8"
+		>
+			{posts.map((post: any) => <Card {...post} />)}
+		</div>
+	</div>
+</div>
