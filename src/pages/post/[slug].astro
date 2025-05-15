@@ -1,10 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+
 import { getPostInfo, getAllPostSlugs } from "../../lib/wp";
 
 const slug = (Astro.params as { slug: string }).slug;
 if (!slug) return Astro.redirect("/404");
-const { title, content, date, excerpt } = await getPostInfo(slug);
+const { title, content, date, excerpt, tags } = await getPostInfo(slug);
 
 export async function getStaticPaths() {
     const slugs = await getAllPostSlugs();
@@ -13,49 +15,46 @@ export async function getStaticPaths() {
 ---
 
 <Layout title={title}>
-    <article class="dark:bg-slate-900 min-h-screen">
-        <header class="mx-auto max-w-3xl px-4 pt-24 pb-16 lg:pt-32">
-            <div class="space-y-6 text-center">
-                <time 
-                    class="inline-block text-sm font-medium text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-slate-800 px-4 py-1.5 rounded-full"
-                >
-                    {date}
-                </time>
-                <h1 class="mt-4 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl md:text-6xl leading-tight">
+    <article class="bg-white text-black">
+        <header class="bg-black py-12 md:py-40 text-white">
+            <div class="container mx-auto max-w-3xl px-4 md:px-0 text-center">
+                <h1 class="font-extrabold text-4xl md:text-5xl uppercase mb-8" transition:name={slug}>
                     {title}
                 </h1>
-                <div 
-                    class="mx-auto mt-6 max-w-2xl text-xl text-gray-600 dark:text-slate-400 [&>p]:leading-relaxed" 
+                <div
+                    class="text-base leading-relaxed line-clamp-3"
                     set:html={excerpt}
                 />
             </div>
         </header>
 
-        <div class="relative mx-auto max-w-2xl px-4">
-            <div class="absolute left-0 top-3 h-full w-0.5 bg-gray-100 dark:bg-slate-800" />
-            
-            <div 
-                class="prose pt-1 ml-6 md:ml-0 dark:prose-invert prose-lg max-w-none pb-16 
-                       prose-headings:font-semibold prose-a:text-orange-500
-                       hover:prose-a:text-orange-600 dark:hover:prose-a:text-orange-400
-                       prose-blockquote:border-l-orange-500 prose-blockquote:dark:text-slate-300
-                       prose-pre:bg-slate-800 prose-pre:shadow-xl prose-pre:rounded-xl"
-                set:html={content}
-            />
-            
-            <div class="absolute left-4 md:left-0 top-3 h-4 w-4 md:-ml-1.5 bg-orange-500 rounded-full animate-pulse" />
-        </div>
-
-        <div class="mx-auto max-w-2xl px-4 pb-16">
-            <a 
-                href="/" 
-                class="inline-flex items-center text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors"
-            >
-                <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Volver
-            </a>
-        </div>
+        <section class="py-8 md:py-24">
+            <div class="container mx-auto max-w-3xl px-4 md:px-0">
+                <div
+                    class="flex items-center gap-2 text-sm font-medium mb-8 text-rose-500"
+                >
+                    <Icon name="lucide:clock-7" size={20} />
+                    <span>{date}</span>
+                </div>
+                <div
+                    set:html={content}
+                    class="prose prose-p:my-4 prose-h2:text-3xl prose-h2:font-extrabold prose-h2:uppercase max-w-none"
+                />
+                <div class="flex items-center justify-end gap-2">
+                    <Icon name="lucide:tag" size={20} />
+                    <div class="flex flex-wrap gap-4">
+                        {tags.map((tag: any) => <span>#{tag.name}</span>)}
+                    </div>
+                </div>
+                <div class="mt-12">
+                    <a
+                        href="/"
+                        class="inline-flex items-center font-semibold uppercase py-3 px-4 border-2 border-rose-400 text-rose-400 hover:text-white hover:bg-rose-400 duration-300 transition-colors"
+                    >
+                        Regresar
+                    </a>
+                </div>
+            </div>
+        </section>
     </article>
 </Layout>
