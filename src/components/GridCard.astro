@@ -3,7 +3,7 @@
 import { getPageInfo, getLatestPosts } from "../lib/wp";
 import Card from "./Card.astro";
 const { title, content } = await getPageInfo("bienvenidos-a-gamehub");
-const posts = await getLatestPosts({ perPage: 3 });
+const posts = await getLatestPosts({ perPage: 12 });
 ---
 
 <div class="bg-black">
